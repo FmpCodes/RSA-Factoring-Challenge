@@ -1,37 +1,25 @@
 #!/usr/bin/python3
-from sys import argv
-import math
-"""Factorize as many numbers as possible into a product of 2 smaller nums"""
+mport sys
 
+def factorize(n):
+    """Factorize a number into the product of two smaller numbers."""
+    for i in range(2, int(n ** 0.5) + 1):
+        if n % i == 0:
+            return (i, n // i)
+    return (n, 1)
 
-def factory(num):
-    """gets the factors of a number"""
-    if num % 2 == 0:
-        i = 2
-        print("{}={}*{}".format(num, int(num//i), i))
-    else:
-        sq = int(math.sqrt(num)) + 1
-        for i in range(3, sq, +2):
-            if num % i == 0:
-                print("{}={}*{}".format(num, int(num//i), i))
-                return
-            if num % (sq + i) == 0:
-                print("{}={}*{}".format(num, sq + i, int(num//(sq + i))))
-                return
-            if num % (sq - i) == 0:
-                print("{}={}*{}".format(num, sq - 1, int(num//(sq - i))))
-                return
+def main():
+    with open(sys.argv[1], 'r') as f:
+        for line in f:
+            n = int(line)
+            p, q = factorize(n)
+            print(f"{n}={p}*{q}")
 
+if __name__ == '__main__':
+    main()
 
-def factors(filename):
-    """read_file and prints them out"""
+"""
+To use this solution, save the code to a file called factors.py and then run it from the command line with python factors.py <file>, where <file> is the name of the input file containing the numbers to be factorized.
 
-    with open(filename, encoding="utf-8") as my_file:
-        for i in my_file.readlines():
-            n = int(i)
-            result = factory(n)
-
-
-if __name__ == "__main__":
-    factors(argv[1])
-
+This solution works by iterating over all possible factors of the number and checking if any of them divides the number evenly. If a factor is found, it is returned along with the corresponding other factor, which is n // factor. If no factor is found
+"""
