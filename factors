@@ -1,25 +1,49 @@
-#!/usr/bin/python3
-mport sys
+#!/usr/bin/env bash
+# is a factors challenge
 
-def factorize(n):
-    """Factorize a number into the product of two smaller numbers."""
-    for i in range(2, int(n ** 0.5) + 1):
-        if n % i == 0:
-            return (i, n // i)
-    return (n, 1)
+check_factor()
+{
+	if [ $# -ne 3 ];
+        then
+                args=("$@")
+                count=0
+                num2=1
+                for a in ${args[*]};
+                do
+                        if [ $count -gt 1 ];
+                        then
+                                num2=$(echo $a*$num2 | bc)
+                        fi
+                        count=$((count + 1))
+                done
+        else
+                num2=$3
+        fi
 
-def main():
-    with open(sys.argv[1], 'r') as f:
-        for line in f:
-            n = int(line)
-            p, q = factorize(n)
-            print(f"{n}={p}*{q}")
+        num1=$2
+        num=$(echo "$1" | tr ':' '=')
 
-if __name__ == '__main__':
-    main()
+        result=$(echo "if($num2 > $num1) 1 else 0" | bc)
+	        if ((result == 1)); then
+		        numcp=$num1
+		        num1=$num2
+		        num2=$numcp
+                fi
 
-"""
-To use this solution, save the code to a file called factors.py and then run it from the command line with python factors.py <file>, where <file> is the name of the input file containing the numbers to be factorized.
+        echo "$num$num1*$num2"
+}
 
-This solution works by iterating over all possible factors of the number and checking if any of them divides the number evenly. If a factor is found, it is returned along with the corresponding other factor, which is n // factor. If no factor is found
-"""
+if [ $# -ne 1 ]
+then
+        echo 'Usage: factors <file>'
+        exit 1
+else
+
+        while read i
+        do
+
+                result=$(factor "$i")
+                check_factor $result
+
+        done < "$1"
+fi
